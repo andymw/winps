@@ -1,0 +1,173 @@
+Notes on Windows PowerShell 3.0
+
+What makes PowerShell unique:
+  The "pipe" does not pipe text, but objects! (patented)
+  Cmdlet (relevant only to PowerShell)
+
+$PSVersionTable
+
+help about_Profiles
+
+3 IMPORTANT COMMANDS:
+  - help (man)
+        help *service*
+        help Get-Service -full
+        (check if parameter can accept pipeline input ByValue, etc)
+  - Get-Member (alias gm; gets RETURN TYPE of a cmdlet, etc)
+        Get-Process | Get-Member
+  - Get-Command (alias gcm)
+        Get-Command *ping*
+        Get-Command -noun computer
+        Get-Command -verb format
+        pathping google.com
+
+See all properties (a best friend):
+  ... | select -property *
+
+Aliasing
+  Get-Service | Where-Object -FilterScript { $_.Status -eq 'Running' }
+  gsv | ? { $_.Status -eq 'Running' }
+
+Restart-Computer
+Stop-Computer
+Get-Process | Stop-Process -WhatIf
+Get-Process | Export-Clixml processes.xml
+
+$procs = Get-Process | Sort-Object -Property ws -Descending `
+                     | Select-Object -first 10
+$procs[0].ws / 1MB
+$procname = "The last process name of 10 is $($procs[-1].name)"
+
+Export-Csv -Delimiter
+
+Get-PSDrive (alias: gdr)
+Get-PSProvider
+cd hklm: (registry)
+
+$env:Path
+
+help about_Comment_Based_Help
+help about_scripts
+<#
+.SYNOPSIS
+.DESCRIPTION
+.NOTES
+.PARAMETER parameter
+.EXAMPLE
+#>
+[CmdletBinding()]
+[OutputType([System.Data.DataRow],[System.String])]
+param (
+    [Parameter(Position=0)][ValidateCount(1,2)][string[]]$name,
+    [Parameter(Mandatory=$true)][Alias("md")][string]$middle,
+    [Parameter()][ValidateCount(2,2)][Alias("fl")][string[]]$firstlast,
+    [Parameter()][switch]$text,
+    [Parameter()][switch]$numbers,
+)
+Write-Verbose "verbose. when passed -verbose, will print"
+Write-Debug "debug. when passed -debug, will print"
+
+Compare-Object -ReferenceObject (Import-Clixml .\processes.xml)
+               -DifferenceObject (Get-Process) -Property name `
+  | ConvertTo-Html `
+  | Out-File Procs.html
+
+echo "this is my output" > output.txt
+
+Get-WmiObject -Class win32_logicaldisk | where { $_.Drivetype -eq 3 }
+Get-WmiObject -Class win32_logicaldisk -filter "drivetype=3" `
+  | format-table -Property DeviceID, `
+    @{name='Free(GB)';expression={$_.Freespace/1GB};FormatString='F3'}, `
+    @{name='Size(GB)';expression={$_.Size/1GB};FormatString='F3'} -Autosize
+gwmi -Class win32_operatingsystem
+gwmi -Class win32_operatingsystem | select -property *
+
+gwmi win32_bios | select serialnumber
+  operation done through cmdlet
+wmic bios get serialnumber
+  operation done through /Windows/system32/Wbem/wmic
+
+Get-Module -ListAvailable
+Import-Module WebAdministration
+Get-Command -module WebAdministration
+
+Enable-PSRemoting
+  Enter-PSSession -ComputerName [computername]
+  Disable-PSRemoting
+      does not undo everything done by Enable-PSRemoting
+      - disable service, listener, firewall exc, LocalAccountTokenFilterPolicy 0
+  help about_Remote_Troubleshooting
+  Invoke-Command
+  Enter-PSSession -ComputerName [computername]
+  $session = New-PSSession -ComputerName [computername]
+      creates a persistent connection (to a domain controller)
+
+--------------------------------------------------------------------------------
+Foreach performance
+  the fastest way to speed up processing:
+    avoid piping
+    use foreach
+    -ReadCount 0
+    -encoding Ascii
+
+  foreach
+  - pipeline Foreach-Object
+  (0 .. 50000) | %{$i++}
+  (0 .. 50000) | foreach {$i++}
+  (0 .. 50000) | Foreach-Object {$i++}
+  Foreach ($num in (0 .. 50000)) {$i++} # load into memory, more resources
+
+Measure-Command {
+  $i=0
+  foreach ($num in (0 .. 50000)) {
+      $i++
+  }
+} | select TotalSeconds
+# PIPELINE IS NOT AS EFFICIENT AS WE THINK
+
+Reading and writing files
+  Get-Content -file file.txt # normal read
+  Get-Content -file file.txt -Readcount 0 # fast read!
+                                          # whole file, not line by line
+    # the problem with -ReadCount 0 - globs file into 1 thing
+  "blah" | out-file blah.txt
+  "blah" | out-file blah.txt -encoding Ascii
+
+Measure-Command {
+  foreach ($line in (Get-Content $env:windir\windowsupdate.log -Readcount 0)){
+    if ($line -match 'successfully installed') {
+      $line
+    }
+  }
+} | select TotalSeconds
+
+[System.IO.File]::ReadAllText("D:\file.txt")
+
+--------------------------------------------------------------------------------
+Strings
+  "This is how you can do this with $($variable.property)"
+  "This is puts $(Get-Date) into txt"
+  'Here is {0} easy way to insert {1} into strings {0}' -f $var1, (Get-Date)
+    # "one of the only good things to come out of VB
+
+Regexes
+    'Text' -match 't(.*)t'
+    $1 $2 $3 (instead of "Unix"'s \1, \2, \3)
+    if ($line -match 'successfully installed .*(KB\d+)') {
+      $matches[1]
+    }
+
+Working with Paths
+  Split-Path
+    Split-Path -Leaf
+  Join-Path
+
+Never use Write-Host
+
+# "ordered" hashtables
+  New-Object psobject -Property ([ordered]@{name="blah";is=$_})
+# another "ordered" table
+  (0 .. 1000) | % {
+    [PSCustomObject]@{name="blah";id=$_}
+  }
+
