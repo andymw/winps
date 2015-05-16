@@ -15,7 +15,6 @@ Andy M. Wang
 # Update-Help # download help files
 
 # location variables
-$COURSES  = "$HOME\Desktop\AMW275\COURSES\"
 $scripts  = "$HOME\Documents\WindowsPowerShell\"
 
 # rm unix conflicts
@@ -45,29 +44,31 @@ function Backup-Profile {
     Copy-Item $PROFILE.CurrentUserAllHosts "$scripts\profiles\Andy_profile.ps1"
 }
 
-# rsync
-function rbackup {
-    Clear-SumatraPDFCache
-    Clean-TemporaryFiles.ps1
-    rsync -va --delete --progress --exclude '*.bak' --exclude '*.tmp' `
-        --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
-        /cygdrive/c/Users/Andy/bin /cygdrive/c/Users/Andy/Desktop/AMW275 `
-        /cygdrive/c/Users/Andy/Documents /cygdrive/c/Users/Andy/Downloads `
-        /cygdrive/c/Users/Andy/Music /cygdrive/c/Users/Andy/Pictures `
-        /cygdrive/c/Users/Andy/Videos/Movies `
-        /cygdrive/c/Users/Andy/Videos/Sony_Vegas_Videos `
-        /cygdrive/c/Users/Andy/Videos/miscvideos `
-        /cygdrive/f/rbackup
-}
 # clear sumatra pdf cache
 function Clear-SumatraPDFCache {
     Remove-Item -Recurse "C:\Users\Andy\bin\sumatrapdfcache" -ErrorAction SilentlyContinue
     Copy-Item "C:\Users\Andy\bin\SumatraPDF-settings_backup.txt" "C:\Users\Andy\bin\SumatraPDF-settings.txt"
 }
 
+# rsync
+function rbackup {
+    Clear-SumatraPDFCache
+    Clean-TemporaryFiles.ps1
+    rsync -va --delete --progress --exclude '*.bak' --exclude '*.tmp' `
+        --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
+        /cygdrive/c/Users/Andy/bin /cygdrive/c/Users/Andy/Desktop `
+        /cygdrive/c/Users/Andy/Documents /cygdrive/c/Users/Andy/Downloads `
+        /cygdrive/c/Users/Andy/Music /cygdrive/c/Users/Andy/Pictures `
+        /cygdrive/c/Users/Andy/Videos/Movies `
+        /cygdrive/c/Users/Andy/Videos/Sony_Vegas_Videos `
+        /cygdrive/c/Users/Andy/Videos/miscvideos `
+        /cygdrive/e/rbackup
+}
+
 function MakeTeX($file) {
     $file = $file.Replace(".\","") # brute force
-    latexmk -quiet -xelatex $file; latexmk -c
+    bash -c "latexmk -quiet -xelatex $file"
+    bash -c 'latexmk -c'
 }
 
 # prompt
