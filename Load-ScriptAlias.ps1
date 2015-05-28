@@ -16,3 +16,5 @@ New-Alias -Force -Name gmail      -Value Check-Gmail
 New-Alias -Force -Name path       -Value Set-Path
 New-Alias -Force -Name search     -Value Search-IndexedFiles
 New-Alias -Force -Name setenv     -Value Set-EnvironmentVariable
+
+New-Alias -Force -Name o          -Value Invoke-Item

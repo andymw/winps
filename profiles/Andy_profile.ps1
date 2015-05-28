@@ -62,7 +62,7 @@ function rbackup {
         /cygdrive/c/Users/Andy/Videos/Movies `
         /cygdrive/c/Users/Andy/Videos/Sony_Vegas_Videos `
         /cygdrive/c/Users/Andy/Videos/miscvideos `
-        /cygdrive/e/rbackup
+        /cygdrive/f/rbackup
 }
 
 function MakeTeX($file) {
