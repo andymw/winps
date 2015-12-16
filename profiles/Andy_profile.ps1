@@ -24,13 +24,16 @@ Remove-Item -Force -ErrorAction SilentlyContinue alias:\wget
 Remove-Item -Force -ErrorAction SilentlyContinue alias:\sort
 
 # applications
-New-Alias -Force -Name npp        'C:\Program Files (x86)\Notepad++\notepad++.exe'
+New-Alias -Force -Name npp  'C:\Program Files (x86)\Notepad++\notepad++.exe'
+
+New-Alias -Force -Name stc  Stop-Computer
 
 # script aliases (shared)
 . Load-ScriptAlias
 
 # functions
 # pdf word count
+<#
 function pdfwc([string[]]$pdffiles) {
     foreach ($pdffileitem in $pdffiles) {
         foreach ($pdffile in (Resolve-Path $pdffileitem)) {
@@ -39,20 +42,24 @@ function pdfwc([string[]]$pdffiles) {
         }
     }
 }
+#>
+
 # backup $PROFILE.CurrentUserAllHosts
 function Backup-Profile {
     Copy-Item $PROFILE.CurrentUserAllHosts "$scripts\profiles\Andy_profile.ps1"
 }
 
+<#
 # clear sumatra pdf cache
 function Clear-SumatraPDFCache {
     Remove-Item -Recurse "C:\Users\Andy\bin\sumatrapdfcache" -ErrorAction SilentlyContinue
     Copy-Item "C:\Users\Andy\bin\SumatraPDF-settings_backup.txt" "C:\Users\Andy\bin\SumatraPDF-settings.txt"
 }
+#>
 
 # rsync
 function rbackup {
-    Clear-SumatraPDFCache
+    #Clear-SumatraPDFCache
     Clean-TemporaryFiles.ps1
     rsync -va --delete --progress --exclude '*.bak' --exclude '*.tmp' `
         --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
@@ -62,14 +69,16 @@ function rbackup {
         /cygdrive/c/Users/Andy/Videos/Movies `
         /cygdrive/c/Users/Andy/Videos/Sony_Vegas_Videos `
         /cygdrive/c/Users/Andy/Videos/miscvideos `
-        /cygdrive/f/rbackup
+        /cygdrive/e/rbackup
 }
 
+<#
 function MakeTeX($file) {
     $file = $file.Replace(".\","") # brute force
     bash -c "latexmk -quiet -xelatex $file"
     bash -c 'latexmk -c'
 }
+#>
 
 # prompt
 $host.PrivateData.ErrorForegroundColor = 'Green'

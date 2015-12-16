@@ -19,10 +19,10 @@ param (
 
 if ($Help) { Get-Help $MyInvocation.MyCommand.path; exit }
 
-if ($Restart) { $cmdop = 'Restart-Computer' }
-else          { $cmdop =    'Stop-Computer' }
+$cmdop = 'C:\WINDOWS\system32\shutdown.exe'
 
-$args = "-NoProfile -WindowStyle Hidden -command $cmdop"
+if ($Restart) { $args = "/r" }
+else          { $args = "/p" }
 
 # If task exists, remove/overwrite with new one.
 Unregister-ScheduledTask -TaskName PowerShell-ScheduledShutdown `
@@ -30,7 +30,7 @@ Unregister-ScheduledTask -TaskName PowerShell-ScheduledShutdown `
 
 $date    = (Get-Date).AddMinutes($Minutes)
 $trigger = New-ScheduledTaskTrigger -Once -At $date
-$action  = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $args
+$action  = New-ScheduledTaskAction -Execute $cmdop -Argument $args
 $sts     = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries
 $taskdef = New-ScheduledTask -Action $action -Trigger $trigger -Settings $sts `
             -Description "Scheduled $cmdop from Powershell"
@@ -38,4 +38,4 @@ $taskdef = New-ScheduledTask -Action $action -Trigger $trigger -Settings $sts `
 $task = Register-ScheduledTask -TaskName PowerShell-ScheduledShutdown `
     -InputObject $taskdef -ErrorAction Inquire
 
-Write-Output "Scheduled $cmdop at $date."
+Write-Output "Scheduled $cmdop $args at $date."
