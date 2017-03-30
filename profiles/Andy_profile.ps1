@@ -24,61 +24,16 @@ Remove-Item -Force -ErrorAction SilentlyContinue alias:\wget
 Remove-Item -Force -ErrorAction SilentlyContinue alias:\sort
 
 # applications
-New-Alias -Force -Name npp  'C:\Program Files (x86)\Notepad++\notepad++.exe'
-
+New-Alias -Force -Name npp  'C:\Program Files\Notepad++\notepad++.exe'
 New-Alias -Force -Name stc  Stop-Computer
 
 # script aliases (shared)
 . Load-ScriptAlias
 
-# functions
-# pdf word count
-<#
-function pdfwc([string[]]$pdffiles) {
-    foreach ($pdffileitem in $pdffiles) {
-        foreach ($pdffile in (Resolve-Path $pdffileitem)) {
-            $count = pdftotext "$pdffile" - | wc -w
-            Write-Output "$pdffile : $count"
-        }
-    }
-}
-#>
-
 # backup $PROFILE.CurrentUserAllHosts
 function Backup-Profile {
     Copy-Item $PROFILE.CurrentUserAllHosts "$scripts\profiles\Andy_profile.ps1"
 }
-
-<#
-# clear sumatra pdf cache
-function Clear-SumatraPDFCache {
-    Remove-Item -Recurse "C:\Users\Andy\bin\sumatrapdfcache" -ErrorAction SilentlyContinue
-    Copy-Item "C:\Users\Andy\bin\SumatraPDF-settings_backup.txt" "C:\Users\Andy\bin\SumatraPDF-settings.txt"
-}
-#>
-
-# rsync
-function rbackup {
-    #Clear-SumatraPDFCache
-    Clean-TemporaryFiles.ps1
-    rsync -va --delete --progress --exclude '*.bak' --exclude '*.tmp' `
-        --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
-        /cygdrive/c/Users/Andy/bin /cygdrive/c/Users/Andy/Desktop `
-        /cygdrive/c/Users/Andy/Documents /cygdrive/c/Users/Andy/Downloads `
-        /cygdrive/c/Users/Andy/Music /cygdrive/c/Users/Andy/Pictures `
-        /cygdrive/c/Users/Andy/Videos/Movies `
-        /cygdrive/c/Users/Andy/Videos/Sony_Vegas_Videos `
-        /cygdrive/c/Users/Andy/Videos/miscvideos `
-        /cygdrive/e/rbackup
-}
-
-<#
-function MakeTeX($file) {
-    $file = $file.Replace(".\","") # brute force
-    bash -c "latexmk -quiet -xelatex $file"
-    bash -c 'latexmk -c'
-}
-#>
 
 # prompt
 $host.PrivateData.ErrorForegroundColor = 'Green'
@@ -89,4 +44,20 @@ function prompt {
     Write-Host -Object " $loc>  " -NoNewline; "`b"
 }
 
-# Set-Location -Path $HOME
+# rsyncs
+function rpulldesktop([string]$ip="192.168.1.99") {
+    Write-Output "Attempting to establish connection to $ip"
+    rsync -va --delete --progress `
+        "andy@${ip}:~/Desktop/andy-pc-sync/*" `
+        /cygdrive/c/Users/Andy/Desktop
+}
+
+function rpushdesktop([string]$ip="192.168.1.99") {
+    Write-Output "Attempting to establish connection to $ip"
+    #Clean-TemporaryFiles.ps1
+    # --exclude '*.bak' --exclude '*.tmp' `
+    # --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
+    rsync -va --delete --progress `
+        /cygdrive/c/Users/Andy/Desktop/* `
+        "andy@${ip}:~/Desktop/andy-pc-sync/"
+}
