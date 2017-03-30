@@ -47,8 +47,8 @@ function prompt {
 # rsyncs
 function rpulldesktop([string]$ip="192.168.1.99") {
     Write-Output "Attempting to establish connection to $ip"
-    rsync -va --delete --progress `
-        "andy@${ip}:~/Desktop/andy-pc-sync/*" `
+    rsync -vaR --delete --progress `
+        "andy@${ip}:/home/andy/Desktop/andy-pc-sync/./" `
         /cygdrive/c/Users/Andy/Desktop
 }
 
@@ -57,7 +57,25 @@ function rpushdesktop([string]$ip="192.168.1.99") {
     #Clean-TemporaryFiles.ps1
     # --exclude '*.bak' --exclude '*.tmp' `
     # --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
-    rsync -va --delete --progress `
-        /cygdrive/c/Users/Andy/Desktop/* `
+    rsync -vaR --delete --progress `
+        /cygdrive/c/Users/Andy/Desktop/./ `
         "andy@${ip}:~/Desktop/andy-pc-sync/"
+}
+
+function rpulldocuments([string]$ip="192.168.1.99") {
+    Write-Output "Attempting to establish connection to $ip"
+    rsync -va --delete --progress `
+        "andy@${ip}:~/Documents/code" `
+        "andy@${ip}:~/Documents/encrypted" `
+        "andy@${ip}:~/Documents/_work" `
+        /cygdrive/d/Documents
+}
+
+function rpushdocuments([string]$ip="192.168.1.99") {
+    Write-Output "Attempting to establish connection to $ip"
+    rsync -va --delete --progress `
+        /cygdrive/d/Documents/code `
+        /cygdrive/d/Documents/encrypted `
+        /cygdrive/d/Documents/_work `
+        "andy@${ip}:~/Documents"
 }
