@@ -79,8 +79,11 @@ function rpulldocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
     rsync -va --delete --progress $dryrun `
         "andy@${ip}:~/Documents/code" `
         "andy@${ip}:~/Documents/encrypted" `
+        "andy@${ip}:~/Documents/fonts-backup" `
+        "andy@${ip}:~/Documents/housing" `
         "andy@${ip}:~/Documents/misc" `
         "andy@${ip}:~/Documents/music" `
+        "andy@${ip}:~/Documents/_academic" `
         "andy@${ip}:~/Documents/_work" `
         /cygdrive/d/Documents
 }
@@ -94,8 +97,11 @@ function rpushdocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
     rsync -va --delete --progress $dryrun `
         /cygdrive/d/Documents/code `
         /cygdrive/d/Documents/encrypted `
+        /cygdrive/d/Documents/fonts-backup `
+        /cygdrive/d/Documents/housing `
         /cygdrive/d/Documents/misc `
         /cygdrive/d/Documents/music `
+        /cygdrive/d/Documents/_academic `
         /cygdrive/d/Documents/_work `
         "andy@${ip}:~/Documents"
 }
