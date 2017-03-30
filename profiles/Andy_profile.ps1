@@ -45,37 +45,79 @@ function prompt {
 }
 
 # rsyncs
-function rpulldesktop([string]$ip="192.168.1.99") {
+function rpulldesktop([string]$ip="192.168.1.99", [switch]$nodryrun) {
+    if ($nodryrun) { $dryrun = "" } else {
+        $dryrun = "--dry-run"
+        Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
+    }
     Write-Output "Attempting to establish connection to $ip"
-    rsync -vaR --delete --progress `
+    rsync -vaR --delete --progress $dryrun `
         "andy@${ip}:/home/andy/Desktop/andy-pc-sync/./" `
         /cygdrive/c/Users/Andy/Desktop
 }
 
-function rpushdesktop([string]$ip="192.168.1.99") {
+function rpushdesktop([string]$ip="192.168.1.99", [switch]$nodryrun) {
+    if ($nodryrun) { $dryrun = "" } else {
+        $dryrun = "--dry-run"
+        Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
+    }
     Write-Output "Attempting to establish connection to $ip"
     #Clean-TemporaryFiles.ps1
     # --exclude '*.bak' --exclude '*.tmp' `
     # --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
-    rsync -vaR --delete --progress `
+    rsync -vaR --delete --progress $dryrun `
         /cygdrive/c/Users/Andy/Desktop/./ `
         "andy@${ip}:~/Desktop/andy-pc-sync/"
 }
 
-function rpulldocuments([string]$ip="192.168.1.99") {
+function rpulldocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
+    if ($nodryrun) { $dryrun = "" } else {
+        $dryrun = "--dry-run"
+        Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
+    }
     Write-Output "Attempting to establish connection to $ip"
-    rsync -va --delete --progress `
+    rsync -va --delete --progress $dryrun `
         "andy@${ip}:~/Documents/code" `
         "andy@${ip}:~/Documents/encrypted" `
+        "andy@${ip}:~/Documents/misc" `
+        "andy@${ip}:~/Documents/music" `
         "andy@${ip}:~/Documents/_work" `
         /cygdrive/d/Documents
 }
 
-function rpushdocuments([string]$ip="192.168.1.99") {
+function rpushdocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
+    if ($nodryrun) { $dryrun = "" } else {
+        $dryrun = "--dry-run"
+        Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
+    }
     Write-Output "Attempting to establish connection to $ip"
-    rsync -va --delete --progress `
+    rsync -va --delete --progress $dryrun `
         /cygdrive/d/Documents/code `
         /cygdrive/d/Documents/encrypted `
+        /cygdrive/d/Documents/misc `
+        /cygdrive/d/Documents/music `
         /cygdrive/d/Documents/_work `
         "andy@${ip}:~/Documents"
+}
+
+function rpullmusic([string]$ip="192.168.1.99", [switch]$nodryrun) {
+    if ($nodryrun) { $dryrun = "" } else {
+        $dryrun = "--dry-run"
+        Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
+    }
+    Write-Output "Attempting to establish connection to $ip"
+    rsync -va --delete --progress $dryrun `
+        "andy@${ip}:~/Music" `
+        /cygdrive/d/Music
+}
+
+function rpushmusic([string]$ip="192.168.1.99", [switch]$nodryrun) {
+    if ($nodryrun) { $dryrun = "" } else {
+        $dryrun = "--dry-run"
+        Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
+    }
+    Write-Output "Attempting to establish connection to $ip"
+    rsync -va --delete --progress $dryrun `
+        /cygdrive/d/Music `
+        "andy@${ip}:~/Music"
 }
