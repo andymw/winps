@@ -76,7 +76,7 @@ function rpulldocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
         Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
     }
     Write-Output "Attempting to establish connection to $ip"
-    rsync -va --delete --progress $dryrun `
+    rsync -va --delete --progress $dryrun --exclude 9-video-series `
         "andy@${ip}:~/Documents/code" `
         "andy@${ip}:~/Documents/encrypted" `
         "andy@${ip}:~/Documents/fa" `
@@ -95,7 +95,7 @@ function rpushdocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
         Write-Output "Dry run. Attempt to connect to $ip (specify -nodryrun to act)"
     }
     Write-Output "Attempting to establish connection to $ip"
-    rsync -va --delete --progress $dryrun `
+    rsync -va --delete --progress $dryrun --exclude 9-video-series `
         /cygdrive/d/Documents/code `
         /cygdrive/d/Documents/encrypted `
         /cygdrive/d/Documents/fa `
