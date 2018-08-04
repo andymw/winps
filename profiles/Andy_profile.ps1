@@ -26,6 +26,7 @@ Remove-Item -Force -ErrorAction SilentlyContinue alias:\sort
 # applications
 New-Alias -Force -Name npp  'C:\Program Files\Notepad++\notepad++.exe'
 New-Alias -Force -Name stc  Stop-Computer
+New-Alias -Force -Name l    Get-ChildItem
 
 # script aliases (shared)
 . Load-ScriptAlias
@@ -81,7 +82,6 @@ function rpulldocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
         "andy@${ip}:~/Documents/encrypted" `
         "andy@${ip}:~/Documents/fa" `
         "andy@${ip}:~/Documents/fonts-backup" `
-        "andy@${ip}:~/Documents/housing" `
         "andy@${ip}:~/Documents/misc" `
         "andy@${ip}:~/Documents/music" `
         "andy@${ip}:~/Documents/_academic" `
@@ -100,7 +100,6 @@ function rpushdocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
         /cygdrive/d/Documents/encrypted `
         /cygdrive/d/Documents/fa `
         /cygdrive/d/Documents/fonts-backup `
-        /cygdrive/d/Documents/housing `
         /cygdrive/d/Documents/misc `
         /cygdrive/d/Documents/music `
         /cygdrive/d/Documents/_academic `
