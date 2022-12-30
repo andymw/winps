@@ -53,8 +53,8 @@ function rpulldesktop([string]$ip="192.168.1.99", [switch]$nodryrun) {
     }
     Write-Output "Attempting to establish connection to $ip"
     rsync -vaR --delete --progress $dryrun `
-        "andy@${ip}:/home/andy/Desktop/andy-pc-sync/./" `
-        /cygdrive/c/Users/Andy/Desktop
+        "andy@${ip}:Desktop/andy-pc-sync/./" `
+        /cygdrive/c/Users/andy/Desktop
 }
 
 function rpushdesktop([string]$ip="192.168.1.99", [switch]$nodryrun) {
@@ -67,8 +67,8 @@ function rpushdesktop([string]$ip="192.168.1.99", [switch]$nodryrun) {
     # --exclude '*.bak' --exclude '*.tmp' `
     # --exclude '.git' --exclude '.svn' --exclude '*.temp' --exclude 'desktop.ini' `
     rsync -vaR --delete --progress $dryrun `
-        /cygdrive/c/Users/Andy/Desktop/./ `
-        "andy@${ip}:~/Desktop/andy-pc-sync/"
+        /cygdrive/c/Users/andy/Desktop/./ `
+        "andy@${ip}:Desktop/andy-pc-sync/"
 }
 
 function rpulldocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
@@ -78,15 +78,15 @@ function rpulldocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
     }
     Write-Output "Attempting to establish connection to $ip"
     rsync -va --delete --progress $dryrun --exclude 9-video-series `
-        "andy@${ip}:~/Documents/chinese" `
-        "andy@${ip}:~/Documents/code" `
-        "andy@${ip}:~/Documents/encrypted" `
-        "andy@${ip}:~/Documents/fa" `
-        "andy@${ip}:~/Documents/fonts-backup" `
-        "andy@${ip}:~/Documents/misc" `
-        "andy@${ip}:~/Documents/music" `
-        "andy@${ip}:~/Documents/_academic" `
-        "andy@${ip}:~/Documents/_work" `
+        "andy@${ip}:Documents/chinese" `
+        "andy@${ip}:Documents/code" `
+        "andy@${ip}:Documents/encrypted" `
+        "andy@${ip}:Documents/fa" `
+        "andy@${ip}:Documents/fonts-backup" `
+        "andy@${ip}:Documents/misc" `
+        "andy@${ip}:Documents/music" `
+        "andy@${ip}:Documents/_academic" `
+        "andy@${ip}:Documents/_work" `
         /cygdrive/d/Documents
 }
 
@@ -106,7 +106,7 @@ function rpushdocuments([string]$ip="192.168.1.99", [switch]$nodryrun) {
         /cygdrive/d/Documents/music `
         /cygdrive/d/Documents/_academic `
         /cygdrive/d/Documents/_work `
-        "andy@${ip}:~/Documents"
+        "andy@${ip}:Documents"
 }
 
 function rpullmusic([string]$ip="192.168.1.99", [switch]$nodryrun) {
@@ -116,7 +116,7 @@ function rpullmusic([string]$ip="192.168.1.99", [switch]$nodryrun) {
     }
     Write-Output "Attempting to establish connection to $ip"
     rsync -vaR --delete --progress $dryrun `
-        "andy@${ip}:~/Music/./" `
+        "andy@${ip}:Music/./" `
         /cygdrive/d/Music
 }
 
@@ -128,5 +128,5 @@ function rpushmusic([string]$ip="192.168.1.99", [switch]$nodryrun) {
     Write-Output "Attempting to establish connection to $ip"
     rsync -vaR --delete --progress $dryrun `
         /cygdrive/d/Music/./ `
-        "andy@${ip}:~/Music"
+        "andy@${ip}:Music"
 }
